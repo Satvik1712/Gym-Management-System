@@ -1,0 +1,182 @@
+-- Create Credentials table
+CREATE TABLE Credentials (
+    User_ID VARCHAR(15) PRIMARY KEY,
+    Password VARCHAR(10)
+);
+
+-- Create Customer table
+CREATE TABLE Customer (
+    Customer_ID NUMBER PRIMARY KEY,
+    User_ID VARCHAR(15) REFERENCES Credentials(User_ID),
+    First_Name VARCHAR(15),
+    Middle_Name VARCHAR(15),
+    Last_Name VARCHAR(15),
+    Gender VARCHAR(10),
+    Email VARCHAR(100),
+    Door_No VARCHAR(10),
+    Street_No VARCHAR(10),
+    Area VARCHAR(10),
+    City VARCHAR(10),
+    Pincode VARCHAR(10),
+    DOB DATE,
+    Mobile_No VARCHAR(13),
+    Aadhar_No VARCHAR(15)
+);
+
+-- Create Plans table
+CREATE TABLE Plans (
+    Plan_ID NUMBER PRIMARY KEY,
+    Plan_Name VARCHAR(10),
+    Duration NUMBER,
+    Price NUMBER,
+    Sessions_per_week NUMBER,
+    Description VARCHAR(50)
+);
+
+-- Create Authentication table
+CREATE TABLE Authentication (
+    Admin_Id NUMBER PRIMARY KEY,
+    Password VARCHAR(10)
+);
+
+-- Create Time_slot table
+CREATE TABLE Time_slot (
+    Time_slot_ID NUMBER PRIMARY KEY,
+    Day VARCHAR(20),
+    Start_time TIMESTAMP,
+    End_time TIMESTAMP
+);
+
+-- Create Equipment table
+CREATE TABLE Equipment (
+    Equipment_ID NUMBER PRIMARY KEY,
+    Equipment_Name VARCHAR(50),
+    Quantity NUMBER,
+    Working_Count NUMBER,
+    Not_working_Count NUMBER,
+    Use VARCHAR(55)
+);
+
+-- Create Payment table
+CREATE TABLE Payment (
+    Payment_ID NUMBER PRIMARY KEY,
+    Membership_ID NUMBER REFERENCES Membership(Membership_ID),
+    Customer_ID NUMBER REFERENCES Customer(Customer_ID),
+    Amount NUMBER,
+    Method VARCHAR(50),
+    Transaction_ID VARCHAR(100),
+    Status VARCHAR(20),
+    Invoice_No VARCHAR(100),
+    Type VARCHAR(50)
+);
+
+-- Create Membership table
+CREATE TABLE Membership (
+    Membership_ID NUMBER PRIMARY KEY,
+    Customer_ID NUMBER REFERENCES Customer(Customer_ID),
+    Plan_ID NUMBER REFERENCES Plans(Plan_ID),
+    Payment_Id NUMBER REFERENCES Payment(Payment_ID),
+    Start_Date DATE,
+    End_Date DATE,
+    Details VARCHAR(55),
+    Status VARCHAR(20)
+);
+
+-- Create Trainer table
+CREATE TABLE Trainer (
+    Trainer_ID NUMBER PRIMARY KEY,
+    Admin_Id NUMBER REFERENCES Authentication(Admin_Id),
+    First_Name VARCHAR(50),
+    Middle_Name VARCHAR(50),
+    Last_Name VARCHAR(50),
+    Gender VARCHAR(10),
+    Specialization VARCHAR(100),
+    Email VARCHAR(100),
+    DOB DATE,
+    Mobile_No VARCHAR(15),
+    Aadhar_No VARCHAR(20),
+    Salary NUMBER
+);
+
+-- Create Attendance table
+CREATE TABLE Attendance (
+    Attendance_ID NUMBER PRIMARY KEY,
+    Customer_ID NUMBER REFERENCES Customer(Customer_ID),
+    Membership_ID NUMBER REFERENCES Membership(Membership_ID),
+    Date DATE,
+    Status VARCHAR(20)
+);
+
+-- Create Presence table
+CREATE TABLE Presence (
+    Presence_ID NUMBER PRIMARY KEY,
+    Trainer_ID NUMBER REFERENCES Trainer(Trainer_ID),
+    Date DATE,
+    Status VARCHAR(20),
+    Login_time TIMESTAMP,
+    Logout_time TIMESTAMP
+);
+
+-- Create Anthropometrics table
+CREATE TABLE Anthropometrics (
+    Anthropometric_ID NUMBER PRIMARY KEY,
+    Customer_ID NUMBER REFERENCES Customer(Customer_ID),
+    Date DATE,
+    Weight NUMBER,
+    Height NUMBER,
+    Waist_length NUMBER,
+    Hip_length NUMBER,
+    Bicep_length NUMBER,
+    Chest_length NUMBER
+);
+
+-- Create Feedback table
+CREATE TABLE Feedback (
+    Feedback_ID NUMBER PRIMARY KEY,
+    Customer_ID NUMBER REFERENCES Customer(Customer_ID),
+    Rating NUMBER,
+    Description VARCHAR(255)
+);
+
+-- Create Order_Details table
+CREATE TABLE Order_Details (
+    Order_Id NUMBER PRIMARY KEY,
+    Customer_ID NUMBER REFERENCES Customer(Customer_ID),
+    Payment_Id NUMBER,
+    Items VARCHAR(255),
+    Order_Date DATE,
+    Delivery_Date DATE,
+    Delivery_status VARCHAR(20)
+);
+
+-- Create Schedule table
+CREATE TABLE Schedule (
+    Schedule_Id NUMBER PRIMARY KEY,
+    Customer_Id NUMBER REFERENCES Customer(Customer_ID),
+    Trainer_Id NUMBER REFERENCES Trainer(Trainer_ID),
+    Time_slot_ID NUMBER REFERENCES Time_slot(Time_slot_ID),
+    Day VARCHAR(20)
+);
+
+-- Create Equipment_Maintenance table
+CREATE TABLE Equipment_Maintenance (
+    Maintenance_ID NUMBER PRIMARY KEY,
+    Equipment_ID NUMBER REFERENCES Equipment(Equipment_ID),
+    Expense_Id NUMBER REFERENCES Expenses(Expense_Id),
+    Maintaince_Date DATE,
+    Maintaince_Type VARCHAR(50),
+    Details VARCHAR(255)
+);
+
+-- Create Expenses table
+CREATE TABLE Expenses (
+    Expense_Id NUMBER PRIMARY KEY,
+    Trainer_ID NUMBER REFERENCES Trainer(Trainer_ID),
+    Maintenance_ID NUMBER REFERENCES Equipment_Maintenance(Maintenance_ID),
+    Type VARCHAR(50),
+    Date DATE,
+    Amount NUMBER,
+    Status VARCHAR(20),
+    Method VARCHAR(50),
+    Transaction_Id VARCHAR(100)
+);
